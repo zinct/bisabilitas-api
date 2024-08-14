@@ -1,0 +1,44 @@
+version: "3.8"
+
+networks:
+  application:
+    driver: bridge
+
+services:
+  app:
+    networks:
+      - application
+    restart: always
+    build:
+      context: ./app/.
+      dockerfile: Dockerfile
+    volumes:
+      - ./app:/app
+      - /app/node_modules
+    ports:
+      - 8000:8000
+
+  db: 
+    networks:
+      - application
+    image: mysql:8.1.0
+    volumes:
+      - application-mysqldata:/var/lib/mysql
+    environment:
+      - MYSQL_DATABASE=root
+      - MYSQL_ALLOW_EMPTY_PASSWORD=TRUE
+    ports:
+      - 3306:3306
+
+  phpmyadmin:
+    networks:
+      - application
+    image: phpmyadmin:latest
+    environment:
+      - PMA_HOST=db
+      - UPLOAD_LIMIT=300m
+    ports:
+      - 8077:80
+
+volumes:
+  application-mysqldata:
