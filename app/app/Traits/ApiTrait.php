@@ -9,10 +9,21 @@ trait ApiTrait
 {
     public function sendResponse($message, $data = null, $code = 200, $showDataWhenNull = false)
     {
-        $response = ['code' => $code, 'message' => $message];
-        if ($data || $showDataWhenNull) $response = array_merge($response, ['data' => $data]);
+        $response = [
+            'code' => $code,
+            'message' => $message
+        ];
 
-        return response()->json($response, $code);
+        // Check if the status code is in the 2xx range
+        if ($code >= 200 && $code < 300) {
+            $response['success'] = true;
+        }
+
+        if ($data || $showDataWhenNull) {
+            $response['data'] = $data;
+        }
+
+        return response()->json($response, 200);
     }
 
     protected function setCookies($key, $value)

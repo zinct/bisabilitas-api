@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\WebsiteHelper;
 use App\Models\Page;
-use App\Pipelines\LikeFilter;
 use App\Traits\ApiTrait;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -18,12 +18,13 @@ class PageController extends Controller
      */
     public function index()
     {
-        $model = Pipeline::send(Page::query())
+        $model = Pipeline::send(Page::query()->latest())
             ->through([])
             ->thenReturn();
 
         return $this->sendResponse('Data successfully retrieved', data: $model->get());
     }
+
 
     /**
      * Store a newly created resource in storage.
@@ -34,7 +35,13 @@ class PageController extends Controller
             'url' => 'required',
         ]);
 
+        // Extract title
+        $metadata = WebsiteHelper::extractWebsiteMetadata($request->url);
+
         Page::create([
+            'title' => $metadata['title'],
+            'image' => $metadata['image'],
+            'description' => $metadata['description'],
             'url' => $request->url,
             'user_id' => Auth::id(),
         ]);
