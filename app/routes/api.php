@@ -26,10 +26,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('/page', PageController::class);
 
     // Pages Histories
-    Route::get('/page-history', [PageHistoryController::class, 'index']);
-    Route::get('/page-recommendation', [RecommendationPageController::class, 'index']);
     Route::post('/page-history/{page}', [PageHistoryController::class, 'read']);
-
+    
     // Logout
     Route::get('/logout', [AuthController::class, 'logout']);
 });
+
+Route::get('/page-history', [PageHistoryController::class, 'index']);
+Route::get('/page-recommendation', [RecommendationPageController::class, 'index']);

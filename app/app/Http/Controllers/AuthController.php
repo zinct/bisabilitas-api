@@ -62,16 +62,18 @@ class AuthController extends Controller
             'accessToken' => 'required',
         ]);
 
+
         try {
-            $providerUser = Socialite::driver($request->provider)->userFromToken($request->accessToken);
+            $providerUser = Socialite::driver($request->provider)->stateless()->userFromToken($request->accessToken);
         } catch (RequestException $exception) {
             return $this->sendResponse('Invalid credentials!', code: 401);
+        } catch (Exception $exception) {
+            return $this->sendResponse($exception->getMessage(), code: 401);
         }
 
         $linkedSocialAccount =  SocialAccount::where('provider_name', $request->provider)
             ->where('provider_id', $providerUser->getId())
             ->first();
-
         if ($linkedSocialAccount) {
             Auth::login($linkedSocialAccount->user);
             $user = Auth::user();
