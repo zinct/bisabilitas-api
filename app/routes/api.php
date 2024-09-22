@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\KBBIController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\PageHistoryController;
 use App\Http\Controllers\ProfileController;
@@ -25,6 +26,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/page/read/{page}', [PageController::class, 'read']);
     Route::apiResource('/page', PageController::class);
 
+
     // Pages Histories
     Route::get('/page-history', [PageHistoryController::class, 'index']);
     Route::get('/page-recommendation', [RecommendationPageController::class, 'index']);
@@ -33,3 +35,5 @@ Route::middleware('auth:sanctum')->group(function () {
     // Logout
     Route::get('/logout', [AuthController::class, 'logout']);
 });
+
+Route::post('/kbbi', [KBBIController::class, 'index']);
